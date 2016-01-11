@@ -14,8 +14,8 @@ runs wmi command and store exit
 #if (-not $PSScriptRoot) {$PSScriptRoot = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition}
 function promptSN($msg) {
  $titulo = "Wmi-Doppler"
- $sim = New-Object System.Management.Automation.Host.ChoiceDescription "&Sim", "Sim / Yes"
- $nao = New-Object System.Management.Automation.Host.ChoiceDescription "&Não", "Não / No"
+ $sim = New-Object System.Management.Automation.Host.ChoiceDescription "&Sim", "Sim"
+ $nao = New-Object System.Management.Automation.Host.ChoiceDescription "&Não", "Não"
  $options = [System.Management.Automation.Host.ChoiceDescription[]]($nao,$sim)
  $result = $host.ui.PromptForChoice($titulo, $msg, $options,0) 
  switch ($result){
