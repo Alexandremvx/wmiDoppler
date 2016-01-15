@@ -39,6 +39,17 @@ if ($wJumps.filename){
 if (promptSN ""){}
 
 Write-Warning "create session"
+
+foreach ($c in $cred) {
+$ses =  New-PSSession -ComputerName 192.168.0.9 -Credential $c -ErrorVariable ssErr -ErrorAction SilentlyContinue
+if ($ses) {
+ return $ses
+} elseif($($ssErr[0].Exception.ErrorCode) -ne 5) {
+ Write-Warning "servidor não acessivel"
+ return $null
+}
+}
+
 Write-Warning "    check/alter credentials (if err)"
 Write-Warning "list targets"
 Write-Warning "check if can reach without jump (wmi)"
