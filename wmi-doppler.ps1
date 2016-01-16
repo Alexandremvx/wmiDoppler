@@ -95,7 +95,7 @@ function create-JumpSessions($Jumps,$Auth){
  $Sess = @()
  foreach ($j in $Jumps) {
   foreach ($a in $auth) {
-   $s = New-PSSession -ComputerName $j -Credential $a -ErrorVariable sErr
+   $s = New-PSSession -Name "******" -ComputerName $j -Credential $a -ErrorVariable sErr
    if ($s) {
     $Sess += $s
     break
@@ -166,7 +166,4 @@ function Read-AuthList(){
 function Save-AuthCsv($Auth, $csvFile){
  $Auth.getnetworkcredential() | select Username,Domain,@{N="SecurePassword";E={$_.securepassword | ConvertFrom-SecureString}} | ConvertTo-Csv | Out-File -FilePath "WMI-credentials.csv"
 }
-
-
-
 
