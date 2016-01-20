@@ -19,22 +19,20 @@ $ErrorActionPreference = "silentlycontinue"
 . .\lib-doppler.ps1
 
 
+
+Write-Warning " # # # load-auth # # # "
+$wAuth = Load-AuthCsv
+
+
 Write-Warning " # # # list jumps # # # "
-$wJumps = @{filename_="jumps.txt"}
-if ($wJumps.filename){
-  if (ls $wJumps.filename -ErrorAction SilentlyContinue){ 
-    $wJumps.file = cat $wJumps.filename; $wJumps.filestr = $wJumps.file -join "`n"
-    if (promptSN "usar os seguintes jumps?`n$($wJumps.filestr) " 1) {$wJumps.machines = $wJumps.file }
-  }else{
-    echo "Arquivo '$($wJumps.filename)' não encontrado."
-  }
-}
+$wJumps = Load-JumperFile
 
-if ($wJumps.machines) {$wJumps.machines}
+Write-Warning " # # # create session # # #"
+$wSessions = create-JumpSessions $wJumps $wAuth
 
 
+Invoke-Command -Session $wSessions {hostname}
 
-Write-Warning "create session"
 Write-Warning "    check/alter credentials (if err)"
 Write-Warning "list targets"
 Write-Warning "check if can reach without jump (wmi)"
