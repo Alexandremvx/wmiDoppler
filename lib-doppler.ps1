@@ -76,6 +76,7 @@ function Load-JumperFile($jumpFile="jumps.txt"){
 
 ## JUMPER SESSIONS FUNCTIONS ##
 function create-JumpSessions($Jumps,$Auth){
+ if (-not $Jumps -and -not $Auth) {Write-Warning 'create-JumpSessions <JumpList> <AuthList>'; return $null}
  $Sess = @()
  foreach ($j in $Jumps) {
   foreach ($a in $auth) {
@@ -88,7 +89,7 @@ function create-JumpSessions($Jumps,$Auth){
     break
    }
   }
-  if (-not $s) {Write-Warning "Servidor de Jump sem credenciais válidas [$j]"}
+  if (-not $s -and $($sErr[0].Exception.ErrorCode) -eq 5) {Write-Warning "Servidor de Jump sem credenciais válidas [$j]"}
  }
  if ($Sess.length -eq 0) {
   Write-Warning "Nenhuma sessão criada."
