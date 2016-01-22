@@ -11,7 +11,7 @@ function promptSN($msg,$def=0) {
  }
 }
 
-function read-list{param([parameter(mandatory=$true)][String[]]${@}) return ${@}}
+function read-list{param([parameter(mandatory=$true)][String[]]${@})if(${@}){return ${@}}}
 
 
 ## AUTH MANAGEMENT FUNCTIONS ##
@@ -53,7 +53,7 @@ function Read-JumperList(){
  $jumps = @()
  do{
   $jump = Read-Host -Prompt "Jumper"
-  if ($jump) {    $jumps += $jump   }
+  if ($jump) {$jumps+= $jump}
  }while($jump)
  if ($jumps.length -eq 0) {
   Write-Warning "Nenhum servidor fornecido"
@@ -63,16 +63,17 @@ function Read-JumperList(){
  }
 }
 
-function Save-JumperFile($Jumps, $jumpFile="jumps.txt"){
+function Save-JumperFile($Jumps, $jumpFile="Jumps.txt"){
  $Jumps | Out-File -FilePath $jumpFile -Append
 }
 
-function Load-JumperFile($jumpFile="jumps.txt"){
+function Load-JumperFile($jumpFile="Jumps.txt"){
  #$jumps = @()
  if (-not $(ls $jumpFile)) { Write-Warning "Arquivo não encontrado $jumpFile"; return $null}
  $jumps = cat $jumpFile
  return $jumps
 }
+
 
 ## JUMPER SESSIONS FUNCTIONS ##
 function create-JumpSessions($Jumps,$Auth){
@@ -97,4 +98,17 @@ function create-JumpSessions($Jumps,$Auth){
  }else{
   return $Sess
  }
+}
+
+
+## TARGET HOSTS FUNCTIONS ##
+function Save-TargetList($Targets, $TargetList="Hosts.txt"){
+ $Targets | Out-File -FilePath $TargetList -Append
+}
+
+function Load-TargetList($TargetList="Hosts.txt"){
+ #$jumps = @()
+ if (-not $(ls $TargetList)) { Write-Warning "Arquivo não encontrado $TargetList"; return $null}
+ $Targets = cat $TargetList
+ return $Targets
 }
