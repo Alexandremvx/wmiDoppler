@@ -32,7 +32,6 @@ function Read-AuthList(){
  }
 }
 
-
 function Save-AuthCsv($Auth, $csvFile="Credentials.csv"){
  $Auth.getnetworkcredential() |
   select Username,Domain,@{N="SecurePassword";E={$_.securepassword | ConvertFrom-SecureString -Key (16..31)}} |
@@ -80,8 +79,13 @@ function create-JumpSessions($Jumps,$Auth){
  if (-not $Jumps -and -not $Auth) {Write-Warning 'create-JumpSessions <JumpList> <AuthList>'; return $null}
  $Sess = @()
  foreach ($j in $Jumps) {
+  $es = Get-PSSession | select computername,state,Availability | ? {$_.Computername  -eq $j -and $_.State -eq "Opened" -and $_.Availability -eq "Available"} | select -First 1
   foreach ($a in $auth) {
-   $s = New-PSSession -Name "$($a.username)@$j" -ComputerName $j -Credential $a -ErrorVariable sErr
+   if ($es) {
+    $s = $es
+   } else {
+    $s = New-PSSession -Name "$($a.username)@$j" -ComputerName $j -Credential $a -ErrorVariable sErr
+   }
    if ($s) {
     $Sess += $s
     break
