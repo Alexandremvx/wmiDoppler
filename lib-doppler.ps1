@@ -79,7 +79,7 @@ function create-JumpSessions($Jumps,$Auth){
  if (-not $Jumps -and -not $Auth) {Write-Warning 'create-JumpSessions <JumpList> <AuthList>'; return $null}
  $Sess = @()
  foreach ($j in $Jumps) {
-  $es = Get-PSSession | select computername,state,Availability | ? {$_.Computername  -eq $j -and $_.State -eq "Opened" -and $_.Availability -eq "Available"} | select -First 1
+  $es = Get-PSSession | ? {$_.Computername  -eq $j -and $_.State -eq "Opened" -and $_.Availability -eq "Available"} | select -First 1
   foreach ($a in $auth) {
    if ($es) {
     $s = $es
