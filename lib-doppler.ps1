@@ -104,6 +104,17 @@ function create-JumpSessions($Jumps,$Auth){
  }
 }
 
+function find-TargetJump ($target, $sessions){
+if (-not $target -or -not $sessions) {Write-Warning 'find-TargetJump <target> <SessionList>'; return $null}
+ foreach ($sess in $sessions){
+  $pingStatus=Invoke-Command -Session $sess -ScriptBlock { Test-Connection $using:target -Quiet -count 1 }
+  if ($pingStatus) {
+   return $sess
+  }       
+ }
+ return $null
+}
+
 
 ## TARGET HOSTS FUNCTIONS ##
 function Save-TargetList($Targets, $TargetList="Hosts.txt"){
