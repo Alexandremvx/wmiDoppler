@@ -25,21 +25,31 @@ Write-Warning " # # # load-files # # # "
  $wJumps = Load-JumperFile
  $wTargets = Load-TargetList
 
+
 Write-Warning " # # # create session # # #"
 
  $wSessions = create-JumpSessions $wJumps $wAuth
 
-Write-Warning " # # # check target connectivity # # # "
+
+Write-Warning " # # # check target connectivity and call job by session # # # "
  
+ $wJobs = @()
+
  foreach ($target in $wTargets) {
   
   $targetJump = find-TargetJump $target $wSessions
  
   if ($targetJump) { echo "@_ $target online via $($tj.computername)"} else { echo "X_ $target não acessivel"}
 
+  if ($targetJump) {
+   $wJobs += Invoke-Command -Session $targetJump -ArgumentList $target,$wAuth -FilePath .\HV4.ps1 -AsJob -JobName $target
+
+  }
+
  }
 
 
+# Receive-Job $wJobs -Wait
 
 return "noop"
 
