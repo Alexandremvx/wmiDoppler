@@ -76,10 +76,10 @@ function Load-JumperFile($jumpFile="Jumps.txt"){
 
 ## JUMPER SESSIONS FUNCTIONS ##
 function create-JumpSessions($Jumps,$Auth){
- if (-not $Jumps -and -not $Auth) {Write-Warning 'create-JumpSessions <JumpList> <AuthList>'; return $null}
+ if (-not $Jumps -or -not $Auth) {Write-Warning 'create-JumpSessions <JumpList> <AuthList>'; return $null}
  $Sess = @()
  foreach ($j in $Jumps) {
-  $es = Get-PSSession | ? {$_.Computername  -eq $j -and $_.State -eq "Opened" -and $_.Availability -eq "Available"} | select -First 1
+  $es = Get-PSSession | ? {$_.Computername -eq $j -and $_.State -eq "Opened" -and $_.Availability -eq "Available"} | select -First 1
   foreach ($a in $auth) {
    if ($es) {
     $s = $es
@@ -89,7 +89,7 @@ function create-JumpSessions($Jumps,$Auth){
    if ($s) {
     $Sess += $s
     break
-   }elseif($($sErr[0].Exception.ErrorCode) -ne 5){
+   } elseif ($($sErr[0].Exception.ErrorCode) -ne 5){
     Write-Warning "Servidor de Jump inacessivel [$j]"
     break
    }
